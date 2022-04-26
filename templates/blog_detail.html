@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %} Blog Detail {% endblock %}
+
+
+{% block content %}
+    <h2>{{ blog.title }}</h2>
+    <img style="width: 700px" src="{{ blog.image.url }}">
+    <p>{{ blog.description|safe }}</p>
+    {% for tag in blog.tags.all %}
+        #{{ tag.name }}
+    {% endfor %}
+    <hr>
+    <div class="row">
+        <div class="col-lg-6">
+            {% for comment in blog.comment.all %}
+                <p>{{ comment.text }}</p>
+                <p>{{ comment.rating }}</p>
+            {% endfor %}
+        </div>
+        <div class="col-lg-6">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

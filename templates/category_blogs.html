@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ category.name }} {% endblock %}
+
+
+{% block content %}
+    <h2>{{ category.name }}</h2>
+    <hr>
+    {% for blog in blogs %}
+        <h2>{{ blog.title }}</h2>
+        <p>{{ blog.description|safe }}</p>
+        <hr>
+    {% endfor %}
+
+{% endblock %}

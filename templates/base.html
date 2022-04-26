@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+{% load static %}
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    {% include 'header.html' %}
+    <div class="row">
+        <div class="col-lg-8">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+        <div class="col-lg-4">
+            <h2>All category</h2>
+            {% for c in categories %}
+                <p><a href="{% url 'category_blogs' c.slug %}">{{ c.name }}</a></p>
+            {% endfor %}
+            <hr>
+            <h2>All tag</h2>
+            {% for t in tags %}
+                #{{ t.name }}
+            {% endfor %}
+        </div>
+    </div>
+
+
+</div>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
