@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %} {{ category.name }} {% endblock %}
+{% block title %} {{ tag.name }} {% endblock %}
 
 {% block content %}
-   <h1>{{ category.name }} page</h1>
+   <h1>{{ tag.name }} page</h1>
     <hr>
     {% for blog in blogs %}
         <h3><a href="{% url 'blog_detail' blog.slug %}">{{ blog.title }}</a></h3>

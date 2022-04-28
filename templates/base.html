@@ -23,7 +23,7 @@
             <hr>
             <h2>All tag</h2>
             {% for t in tags %}
-                #{{ t.name }}
+                <a href="{% url 'tag_blogs' t.slug %}">#{{ t.name }}</a>
             {% endfor %}
         </div>
     </div>

@@ -16,6 +16,10 @@
             {% for comment in blog.comment.all %}
                 <p>{{ comment.text }}</p>
                 <p>{{ comment.rating }}</p>
+                <form action="{% url 'comment_delete' comment.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
             {% endfor %}
         </div>
         <div class="col-lg-6">

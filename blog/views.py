@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
+from django.template.defaultfilters import slugify
 from django.views import View
 
-from .models import Blog, Category, Tag
+
+from .models import Blog, Category, Tag, Comment
 from .forms import BlogForm, CommentForm
 
 
@@ -40,6 +42,17 @@ class BlogByCategory(BaseView, View):
         return render(request, 'category_blogs.html', context)
 
 
+class BlogByTag(BaseView, View):
+    def get(self, request, slug):
+        context = {}
+        tag = Tag.objects.get(slug=slug)
+        context['tag'] = tag
+        context['blogs'] = Blog.objects.filter(tags=tag)
+        context['categories'] = self.category()
+        context['tags'] = self.tag()
+
+        return render(request, 'tag_blogs.html', context)
+
 class BlogCreate(BaseView, View):
     def get(self, request):
         context = {}
@@ -51,7 +64,15 @@ class BlogCreate(BaseView, View):
     def post(self, request):
         form = BlogForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            form_create = form.save(commit=False)
+            form_create.slug = slugify(form_create.title)
+            form_create.user = request.user
+            form_create.save()
+            blog = Blog.objects.get(id=form_create.id)
+            tags = form.cleaned_data['tags'].split(',')
+            for tag in tags:
+                tag, created = Tag.objects.get_or_create(name=tag.strip())
+                blog.tags.add(tag)
             return redirect('blog_list')
 
 
@@ -77,3 +98,12 @@ class BlogDetail(BaseView, View):
             form_comment.user = request.user
             form_comment.save()
             return redirect('blog_detail', form_comment.blog.slug)
+
+
+class CommentDelete(View):
+    def post(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        comment = Comment.objects.get(pk=pk)
+        comment.delete()
+        return redirect('blog_detail', comment.blog.slug)
+
