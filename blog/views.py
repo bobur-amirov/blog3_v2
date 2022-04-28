@@ -23,7 +23,7 @@ class BlogList(BaseView, View):
         context['blogs'] = Blog.objects.all()
         context['categories'] = self.category()
         context['tags'] = self.tag()
-        return render(request, 'blog_list.html', context)
+        return render(request, 'blog/blog_list.html', context)
 
 
 class BlogByCategory(BaseView, View):
@@ -39,7 +39,7 @@ class BlogByCategory(BaseView, View):
             'tags': tags,
         }
 
-        return render(request, 'category_blogs.html', context)
+        return render(request, 'blog/category_blogs.html', context)
 
 
 class BlogByTag(BaseView, View):
@@ -51,7 +51,7 @@ class BlogByTag(BaseView, View):
         context['categories'] = self.category()
         context['tags'] = self.tag()
 
-        return render(request, 'tag_blogs.html', context)
+        return render(request, 'blog/tag_blogs.html', context)
 
 class BlogCreate(BaseView, View):
     def get(self, request):
@@ -59,7 +59,7 @@ class BlogCreate(BaseView, View):
         context['form'] = BlogForm()
         context['categories'] = self.category()
         context['tags'] = self.tag()
-        return render(request, 'blog_create.html', context)
+        return render(request, 'blog/blog_create.html', context)
 
     def post(self, request):
         form = BlogForm(request.POST, request.FILES)
@@ -88,7 +88,7 @@ class BlogDetail(BaseView, View):
         blog.views += 1
         blog.save()
 
-        return render(request, 'blog_detail.html', context)
+        return render(request, 'blog/blog_detail.html', context)
 
     def post(self, request, slug):
         form = CommentForm(request.POST)
