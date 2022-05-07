@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} Profile {% endblock %}
+
+{% block content %}
+    <h1>Profile page</h1>
+    <hr>
+    <p>Username: {{ profile.username }}</p>
+    <p>Email: {{ profile.email }}</p>
+    <p>Phone number: {{ profile.phone_number }}</p>
+    {% if profile.image %}
+        <img style="width: 100px" src="{{ profile.image.url }}">
+    {% endif %}
+    <p>Date of birth: {{ profile.date_of_birth }}</p>
+    <a href="{% url 'profile_update' profile.id %}">Edit Profile</a>
+{% endblock %}

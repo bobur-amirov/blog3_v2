@@ -21,3 +21,9 @@ class RegisterForm(UserCreationForm):
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email kiriting'}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone number kiriting'}),
         }
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['username', 'email', 'first_name', 'last_name', 'phone_number', 'date_of_birth', 'image', 'address']

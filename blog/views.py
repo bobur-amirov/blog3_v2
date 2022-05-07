@@ -101,7 +101,7 @@ class BlogDetail(BaseView, View):
 
 
 class CommentDelete(View):
-    def post(self, request, *args, **kwargs):
+    def post(self, request, **kwargs):
         pk = kwargs['pk']
         comment = Comment.objects.get(pk=pk)
         comment.delete()
