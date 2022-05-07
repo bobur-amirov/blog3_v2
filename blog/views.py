@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
 from django.views import View
+from django.views.generic import DeleteView, ListView
 
-
+from account.models import Account
 from .models import Blog, Category, Tag, Comment
-from .forms import BlogForm, CommentForm
+from .forms import BlogForm, CommentForm, BlogUpdateForm
 
 
 class BaseView:
@@ -76,6 +77,39 @@ class BlogCreate(BaseView, View):
             return redirect('blog_list')
 
 
+class BlogUpdate(View):
+    def get(self, request, slug):
+        blog = Blog.objects.get(slug = slug)
+        tags_value = ''
+        for tag in blog.tags.all():
+            tags_value += str(tag)
+            tags_value += ','
+        form = BlogUpdateForm(instance=blog)
+        context = {
+            'blog':blog,
+            'form': form,
+            'tags_value': tags_value
+        }
+        return render(request, 'blog/blog_update.html', context)
+
+    def post(self, request, slug):
+        blog = Blog.objects.get(slug=slug)
+        form = BlogUpdateForm(request.POST, request.FILES, instance=blog)
+        if form.is_valid():
+            form_create = form.save(commit=False)
+            form_create.slug = slugify(form_create.title)
+            form_create.user = request.user
+            form_create.save()
+            tags = request.POST['tags'].split(',')
+            for tag in blog.tags.all():
+                if tag not in tags:
+                    blog.tags.remove(tag)
+            for tag in tags:
+                if tag != '':
+                    tag, created = Tag.objects.get_or_create(name=tag.strip())
+                    blog.tags.add(tag)
+            return redirect('blog_list')
+
 class BlogDetail(BaseView, View):
     def get(self, request, slug):
         context = {}
@@ -107,3 +141,25 @@ class CommentDelete(View):
         comment.delete()
         return redirect('blog_detail', comment.blog.slug)
 
+
+class BlogDelete(DeleteView):
+    model = Blog
+    template_name = 'blog/blog_delete.html'
+    success_url = '/'
+
+
+class CategoryList(ListView):
+    model = Category
+    template_name = 'blog/category_list.html'
+
+
+class CategoryAddUser(View):
+    def get(self, request, slug):
+        category = Category.objects.get(slug=slug)
+        user = Account.objects.get(username=request.user.username)
+        if user in category.user.all():
+            category.user.remove(user)
+            return redirect('category_list')
+        else:
+            category.user.add(user)
+            return redirect('category_list')

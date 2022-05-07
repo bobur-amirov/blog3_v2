@@ -10,6 +10,16 @@ class BlogForm(forms.ModelForm):
         model = Blog
         fields = ['title', 'description', 'image', 'category']
 
+        widgets = {
+            'description': forms.Textarea(attrs={'class': 'form-control'})
+        }
+
+
+class BlogUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Blog
+        fields = ['title', 'description', 'image', 'category']
+
 
 class CommentForm(forms.ModelForm):
     class Meta:

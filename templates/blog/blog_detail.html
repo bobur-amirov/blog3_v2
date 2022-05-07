@@ -11,6 +11,9 @@
         #{{ tag.name }}
     {% endfor %}
     <hr>
+    <a href="{% url 'blog_update' blog.slug %}"> Update</a>
+    <a href="{% url 'blog_delete' blog.slug %}"> Delete</a>
+    <hr>
     <div class="row">
         <div class="col-lg-6">
             {% for comment in blog.comment.all %}

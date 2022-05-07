@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %} Category {% endblock %}
+
+{% block content %}
+   <h1>Category page</h1>
+    <hr>
+    {% for c in object_list %}
+       <p>{{ c.name }} ({{ c.blog.count }})</p>
+       <p>User count: {{ c.user.count }}</p>
+        {% if request.user in c.user.all %}
+        <a href="{% url 'category_user_add' c.slug %}" class="btn btn-danger">Tark etish</a>
+        {% else %}
+        <a href="{% url 'category_user_add' c.slug %}" class="btn btn-success">A'zo bo'lish</a>
+        {% endif %}
+        <hr>
+    {% endfor %}
+{% endblock %}
