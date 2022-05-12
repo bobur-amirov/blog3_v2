@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
 from django.views import View
 from django.views.generic import DeleteView, ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.db.models import Q
 
 from account.models import Account
 from .models import Blog, Category, Tag, Comment
@@ -21,7 +24,13 @@ class BaseView:
 class BlogList(BaseView, View):
     def get(self, request):
         context = {}
-        context['blogs'] = Blog.objects.all()
+        search = request.GET.get('search')
+        if search:
+            context['blogs'] = Blog.objects.filter(
+                Q(title__icontains=search) | Q(category__name__icontains=search)
+            )
+        else:
+            context['blogs'] = Blog.objects.all()
         context['categories'] = self.category()
         context['tags'] = self.tag()
         return render(request, 'blog/blog_list.html', context)
@@ -54,7 +63,8 @@ class BlogByTag(BaseView, View):
 
         return render(request, 'blog/tag_blogs.html', context)
 
-class BlogCreate(BaseView, View):
+class BlogCreate(LoginRequiredMixin, BaseView, View):
+    login_url = reverse_lazy('login')
     def get(self, request):
         context = {}
         context['form'] = BlogForm()

@@ -3,6 +3,7 @@ from django.views import View
 from django.contrib.auth import authenticate, login
 from django.views.generic import CreateView, UpdateView
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 from .forms import RegisterForm, ProfileUpdateForm
 from .models import Account
@@ -52,3 +53,18 @@ class UserUpdate(UpdateView, BaseView):
         context['categories'] = self.category()
         context['tags'] = self.tag()
         return context
+
+
+class UserList(View):
+    def get(self, request):
+        search = request.GET.get('search')
+        if search:
+            users = Account.objects.filter(
+                Q(username__icontains=search) | Q(phone_number__icontains=search)
+            )
+        else:
+            users = Account.objects.all()
+        context = {
+            'users': users
+        }
+        return render(request, 'account/user_list.html', context)

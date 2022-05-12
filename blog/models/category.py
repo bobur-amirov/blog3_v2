@@ -7,7 +7,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=50, unique=True)
     image = models.ImageField(upload_to='category/')
     description = models.TextField()
-    user = models.ManyToManyField(Account, related_name='category')
+    user = models.ManyToManyField(Account, related_name='category', null=True, blank=True)
 
     def __str__(self):
         return self.name

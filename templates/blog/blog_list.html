@@ -3,7 +3,12 @@
 {% block title %} Home {% endblock %}
 
 {% block content %}
-   <h1>Home page</h1>
+    <h1>Home page</h1>
+    <hr>
+    <form class="d-flex" method="get">
+        <input name="search" class="form-control me-2" type="search" placeholder="Blog title Search" aria-label="Search">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
     <hr>
     {% for blog in blogs %}
         <h3><a href="{% url 'blog_detail' blog.slug %}">{{ blog.title }}</a></h3>
